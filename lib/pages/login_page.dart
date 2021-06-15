@@ -1,8 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_builder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:weight_tracker/pages/home_page.dart';
 import 'package:weight_tracker/pages/landing_page.dart';
+import 'package:weight_tracker/pages/register_page.dart';
 import 'package:weight_tracker/pages/verify_page.dart';
+import 'package:weight_tracker/utils/auth.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/register';
@@ -14,6 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  final Auth auth = Auth();
 
   Future<void> _alertDialogBuilder(String error) async {
     return showDialog(
@@ -38,26 +44,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<String?> _loginToAccount() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _loginEmail,
-          password: _loginPassword,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return ('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        return ('Wrong password provided for that user.');
-      }
-    }
-  }
-
   void _submitForm() async {
     setState(() {
       _isLoading = true;
     });
-    String? _createAccountFeedback = await _loginToAccount();
+    String? _createAccountFeedback =
+        await auth.signInWithEmailAndPassword(_loginEmail, _loginPassword);
 
     if (_createAccountFeedback != null) {
       _alertDialogBuilder(_createAccountFeedback);
@@ -148,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             "Login",
                             style:
-                            TextStyle(color: Theme.of(context).buttonColor),
+                                TextStyle(color: Theme.of(context).buttonColor),
                           ),
                         ),
                         Visibility(
@@ -165,6 +157,17 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     color: Theme.of(context).primaryColor,
                   ),
+                  SignInButtonBuilder(
+                    backgroundColor: Colors.blue,
+                    onPressed: () {
+                      auth.signInWithGoogle();
+                      debugPrint('shfkad');
+                    },
+                    text: "Sign In With Google",
+                    textColor: Colors.white,
+                    icon: FontAwesomeIcons.google,
+                    iconColor: Colors.white,
+                  )
                 ],
               ),
               key: _formKey,
@@ -177,7 +180,8 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(color: Theme.of(context).buttonColor),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => RegisterPage()));
             },
           )
         ],

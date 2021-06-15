@@ -48,7 +48,7 @@ class _VerifyPageState extends State<VerifyPage> {
           IconButton(
             onPressed: () {
               user!.delete();
-              Navigator.push(context,
+              Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => RegisterPage()));
             },
             icon: Icon(Icons.logout),

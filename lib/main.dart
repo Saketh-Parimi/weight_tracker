@@ -17,12 +17,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
       home: LandingPage(),
-      routes: {
-        HomePage.routeName: (context) => HomePage(),
-        RegisterPage.routeName: (context) => RegisterPage(),
-        LoginPage.routeName: (context) => LoginPage(),
-        VerifyPage.routeName: (context) => VerifyPage(),
-      },
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_tracker/pages/verify_page.dart';
 
+import 'login_page.dart';
+
 class RegisterPage extends StatefulWidget {
   static const routeName = '/register';
 
@@ -176,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
               style: TextStyle(color: Theme.of(context).buttonColor),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
             },
           )
         ],
