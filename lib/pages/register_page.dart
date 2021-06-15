@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_tracker/pages/verify_page.dart';
+import 'package:weight_tracker/utils/auth.dart';
 
 import 'login_page.dart';
 
@@ -14,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  final Auth auth = Auth();
 
   Future<void> _alertDialogBuilder(String error) async {
     return showDialog(
@@ -38,27 +40,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<String?> _createAccount() async {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _registerEmail, password: _registerPassword);
-      return null;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      }
-    } catch (e) {
-      return e.toString();
-    }
-  }
+
 
   void _submitForm() async {
     setState(() {
       _isLoading = true;
     });
-    String? _createAccountFeedback = await _createAccount();
+    String? _createAccountFeedback = await auth.signUpWithEmailAndPassword(_registerEmail, _registerPassword);
 
     if (_createAccountFeedback != null) {
       _alertDialogBuilder(_createAccountFeedback);
